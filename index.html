@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* CSS for the container */
+        #embeddedContent {
+            margin: 0 auto;
+            /* border: 2px solid #c3c3c3; /* Border style */
+            border-radius: 10px; /* Border radius for rounded corners */
+            padding: 5px; /* Padding inside the border */
+            width: fit-content; /* Adjusts container width to fit content */
+            font-size: x-large;
+        }
+			td {
+			  /*border: 1px solid black;
+			  border-collapse: collapse;*/
+			  font-size: 10px;
+			  padding: 8px 10px;
+			}
+			th {
+				padding: 0px;
+			}
+
+            .logoImg {
+                width: 100px;
+                height: 100px;   
+                margin-top: -70px; 
+            }
+			
+			table {
+				width: 320px;
+				border-collapse: separate;
+				border-spacing: 0;
+				border: 5px solid orange; /* Set your desired border style */
+				border-radius: 10px; /* Adjust the radius as needed */
+                margin-top: 50px;
+				
+			}
+			.header {
+				padding: 15px 20px;
+				margin: -1px;
+				font-size: 18px;
+				background-color: orange;
+				border-top-left-radius: 10px;
+				border-top-right-radius: 10px;
+                color: brown;
+			}
+
+            .rhdr {
+                font-size: 14px;
+                color: grey;
+            }
+			
+            .rval {
+                font-size: 18px;
+                color: brown;
+                padding-bottom: 10px;
+                padding-left: 30px;
+            }
+
+			tr td:nth-child(2) {
+				text-decoration: underline;
+				text-decoration-color: #CECECE;
+				text-decoration-thickness: 3px;
+			}
+			
+			tr td:nth-child(1) {
+				font-weight: bold;
+			}
+			
+			tr:nth-child(2) td {
+				padding-top: 15px; 
+			}
+	
+			tr:nth-child(6) td {
+				padding-bottom: 15px; 
+			}				
+        
+			#embeddedContent {
+				opacity: 1;
+			}
+			#shareBtn {
+				display: block;
+			}
+            .footer {
+                font-size: 12px;
+            }
+    </style>
+			
+    </style>
+</head>
+<body>
+	  
+	  
+	  
+	  <!-- html2canvas library -->
+	  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <div id="embeddedContent"></div>
+	<br/>
+	<button id="shareBtn">Download and Share</button>
+
+	<script>
+        // Function to get URL parameters
+        function getParameterByName(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get the name parameter from the URL
+        
+		const name = getParameterByName('name') || 'पारायण करणारेचे नावं';
+		const regno = getParameterByName('regno') || 'नोंदणी क्रमांक'; 
+		const needpothi = (getParameterByName('needpothi')?.toLowerCase() === 'yes'?'पाहिजे':'स्वताची आहे') || 'स्वताची आहे/पाहिजे'; 
+		const needchair = (getParameterByName('needchair')?.toLowerCase() === 'yes'?'कुर्सी वर':'खाली बसून') || 'कुर्सी वर/खाली बसून'; 
+		const section = (getParameterByName('section')?.toUpperCase()) || 'बैठक कक्ष'; 
+		const phoneNo = (getParameterByName('phno')?.toUpperCase()) || ''; 
+
+        // Create the entire HTML structure as a formatted string
+        const htmlContent = `
+		<table>
+            
+			<tr  >
+				<th colspan="3">
+					<div class="header">
+                        <img src='logo.png' class="logoImg"></img><br/>
+					    <span>भाग्यनगर महापारायण सोहळा</span>
+					</div>
+				</th>
+			</tr>
+			<tr>
+				<td class="rhdr">Name/नावं :</td>
+			</tr>
+            <tr><td class="rval">${name}</td></tr>
+			<tr>
+				<td class="rhdr">Reg.No./नोंदणी क्र. :</td>
+			</tr>
+            <tr><td class="rval">${regno}</td></tr>
+			<tr>
+				<td class="rhdr">Book/पोथी : </td>
+			</tr>
+            <tr><td class="rval">${needpothi}</td></tr>
+			<tr>
+				<td class="rhdr">Sitting/बैठकी :</td>
+			</tr>
+            <tr><td class="rval">${needchair}</td></tr>
+			<tr>
+				<td class="rhdr">Section/बैठक कक्ष :</td><td></td>
+			</tr>
+            <tr><td class="rval">${section}</td></tr>
+            <tr><td class="footer">सूचना: पूजा व आरती समग्र/साहित्य आणण्यास सक्त मनाई आहे</td></tr>
+		</table>
+        `;
+
+        // Insert the formatted HTML into the content div
+        document.getElementById('embeddedContent').innerHTML = htmlContent;
+
+		function saveTableAsImageAndShare() {
+			// Convert table to canvas
+			html2canvas(document.getElementById('embeddedContent')).then(canvas => {
+					// Convert canvas to a data URL for the image
+					let imgData = canvas.toDataURL('image/png');
+
+					// Create an anchor element to trigger the download
+					let a = document.createElement('a');
+					a.href = imgData;
+					a.download = `RegCard-${name}-${phoneNo}.png`;  // Name of the image file to be saved
+
+					// Trigger the download by simulating a click
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+
+					let whatsappMessage = `नोंदणी कार्ड - ${name}`;
+            		let encodedMessage = encodeURIComponent(whatsappMessage);
+
+					if(phoneNo !== ''){
+						let whatsappLink = `https://wa.me/${phoneNo}?text=${encodedMessage}`;
+						// Open WhatsApp share link
+						window.open(whatsappLink, '_blank');
+					}
+				});
+		}
+
+		// Button event listener
+		document.getElementById('shareBtn').addEventListener('click', function() {
+			saveTableAsImageAndShare();
+		});
+
+
+    </script>
+	
+</body>
+</html>
