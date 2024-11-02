@@ -215,6 +215,11 @@
 			let searchResults = document.getElementById("searchResults");
 			let errorDiv = document.getElementById("errorDiv");
 			let saveBtn = document.getElementById("saveBtn");
+
+			searchResults.innerHTML = "";
+            errorDiv.style.display = "none";
+            saveBtn.style.display = "none";
+
             try {
                 // Fetch the CSV file
                 let input = document.getElementById('searchBox').value;
@@ -242,10 +247,14 @@
 
         function validatePhoneNum(phno){
             try{
+				if(phno.length != 10) return false; 
                 const number = parseInt(phno, 10);
                 if (number > 6000000000 && number <=9999999999) {
                     return true;
                 }
+				else{
+					return false;
+				}
             }
             catch(err) {
                 return false;
