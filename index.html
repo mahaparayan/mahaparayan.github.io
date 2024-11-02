@@ -90,8 +90,9 @@
 				padding-bottom: 15px; 
 			}				
         
-			#shareBtn {
-				display: none;
+			#saveBtn {
+				display: block;
+				margin-left: 10px;
 			}
             .footer {
                 font-size: 12px;
@@ -135,7 +136,7 @@
     </div>
     <div id="searchResults"></div>
 	<br/>
-	<button id="shareBtn" class="saveButton">Save</button>
+	<button id="saveBtn" class="saveButton" onclick="saveCards()" style="display: none;">Save cards</button>
 	<div id="errorDiv" class="errorMsg" style="display: none;">
 		<span>ह्या मोबाईल नंबरची नोंदणी अजून झाली नाही, नोंदणी साठी व्हाट्सअँप वर आपली माहिती पाठवायला खाली दिलेला बटनावर क्लिक करा.</span>
 		<br/><br/>
@@ -176,41 +177,35 @@
         // Insert the formatted HTML into the content div
         //document.getElementById('embeddedContent').innerHTML = htmlContent;
 
-		function saveTableAsImageAndShare() {
-			// Convert table to canvas
-			html2canvas(document.getElementById('embeddedContent')).then(canvas => {
+		function saveCards() {
+			let i=1;
+			let phoneNo = document.getElementById('searchBox').value;
+			Array.from(document.getElementsByClassName("cardContainer")).forEach(element => {
+					
+					// Convert table to canvas
+					html2canvas(element).then(canvas => {
 					// Convert canvas to a data URL for the image
 					let imgData = canvas.toDataURL('image/png');
 
 					// Create an anchor element to trigger the download
 					let a = document.createElement('a');
 					a.href = imgData;
-					a.download = `RegCard-${name}-${phoneNo}.png`;  // Name of the image file to be saved
+					a.download = `RegCard-${phoneNo}-${i++}.png`;  // Name of the image file to be saved
 
 					// Trigger the download by simulating a click
 					document.body.appendChild(a);
 					a.click();
 					document.body.removeChild(a);
-
-					let whatsappMessage = `नोंदणी कार्ड - ${name}`;
-            		let encodedMessage = encodeURIComponent(whatsappMessage);
-                    
-					if(phoneNo !== ''){
-						let whatsappLink = `https://wa.me/${phoneNo}?text=${encodedMessage}`;
-						// Open WhatsApp share link
-						window.open(whatsappLink, '_blank');
-					}
 				});
+
+			});
+			
 		}
 
-		// Button event listener
-		document.getElementById('shareBtn').addEventListener('click', function() {
-			saveTableAsImageAndShare();
-		});
-
-        async function FetchCards() {
+		async function FetchCards() {
 			let searchResults = document.getElementById("searchResults");
 			let errorDiv = document.getElementById("errorDiv");
+			let saveBtn = document.getElementById("saveBtn");
             try {
                 // Fetch the CSV file
                 let input = document.getElementById('searchBox').value;
@@ -226,10 +221,13 @@
                 console.log(jsonArray); // Output the array of JSON objects to the console
                 const cards = jsonArray.map(cardData => generateCardHtml(cardData));
                 errorDiv.style.display = "none";
-                searchResults.innerHTML = cards.join("<br/>")    
+                searchResults.innerHTML = cards.join("<br/>");
+				saveBtn.style.display = "block";
+
             } catch (error) {
                 searchResults.innerHTML = "";
 				errorDiv.style.display = "block";
+				saveBtn.style.display = "none";
             }
         }
 
