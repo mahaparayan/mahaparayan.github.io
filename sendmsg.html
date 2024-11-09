@@ -106,7 +106,7 @@
 
             .searchBox {
                 width: calc(100% - 10px); 
-                height: 32px;
+                height: 200px;
                 font-size: 20px; 
                 margin: 5px;
             }
@@ -139,7 +139,7 @@
 		<span>Send Message</span>
 	</div>
     <div class="sb-container">
-        <input id="phNums" type="text" placeholder="Phone numbers separated by comma ..." class="searchBox">
+        <textarea id="phNums" type="text" placeholder="Phone numbers separated by comma ..." class="searchBox"></textarea>
         <button id="GenerateList" onclick="generateList()">Generate Links</button>
         </button>
     </div>
@@ -177,7 +177,7 @@
      function generateList()   {
         let mobileNums = document.getElementById("phNums").value.split(",");
         if(mobileNums !== ''){
-            let htmlList = mobileNums.map(phoneNo => {return `<a href="#" onclick="send(${phoneNo})">${phoneNo}</a>`}).join("<br/><br/>");
+            let htmlList = mobileNums.map(phoneNo => {return `<a href="#" onclick="send(${phoneNo.trim()})">${phoneNo}</a>`}).join("<br/><br/>");
             document.getElementById("List").innerHTML = htmlList;
         }
      }
