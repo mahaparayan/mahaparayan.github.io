@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Search</title>
+    <style>
+        
+        /* CSS for the container */
+        .cardContainer {
+            margin: 0 auto;
+            /* border: 2px solid #c3c3c3; /* Border style */
+            border-radius: 10px; /* Border radius for rounded corners */
+            padding: 5px; /* Padding inside the border */
+            width: fit-content; /* Adjusts container width to fit content */
+            font-size: x-large;
+        }
+			td {
+			  /*border: 1px solid black;
+			  border-collapse: collapse;*/
+			  font-size: 10px;
+			  padding: 8px 10px;
+			}
+			th {
+				padding: 0px;
+			}
+
+            .logoImg {
+                width: 100px;
+                height: 100px;   
+                margin-top: -70px; 
+            }
+			
+			table {
+				width: 320px;
+				border-collapse: separate;
+				border-spacing: 0;
+				border: 5px solid orange; /* Set your desired border style */
+				border-radius: 10px; /* Adjust the radius as needed */
+                margin-top: 50px;
+				
+			}
+			.header {
+				padding: 15px 20px;
+				margin: -1px;
+				font-size: 18px;
+				background-color: orange;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+                color: brown;
+			}
+
+			.topheader {
+				background-color: orange;
+				font-size: 22px;
+				text-align: center;
+				padding: 20px 10px;
+				color: maroon;
+				margin-bottom: 10px;
+				font-weight: bold;
+			}
+
+            .rhdr {
+                font-size: 14px;
+                color: grey;
+            }
+			
+            .rval {
+                font-size: 18px;
+                color: brown;
+                padding-bottom: 10px;
+                padding-left: 30px;
+            }
+
+			tr td:nth-child(2) {
+				text-decoration: underline;
+				text-decoration-color: #CECECE;
+				text-decoration-thickness: 3px;
+			}
+			
+			tr td:nth-child(1) {
+				font-weight: bold;
+			}
+			
+			tr:nth-child(2) td {
+				padding-top: 15px; 
+			}
+	
+			tr:nth-child(6) td {
+				padding-bottom: 15px; 
+			}				
+        
+			#saveBtn {
+				display: block;
+				margin-left: 10px;
+			}
+            .footer {
+                font-size: 12px;
+            }
+
+            button {
+                height: 36px;
+                background-color: white;
+                border-color: orange;
+            }
+
+            .searchBox {
+                width: calc(100% - 100px); 
+                height: 32px;
+                font-size: 20px; 
+                margin: 5px;
+            }
+
+			.errorMsg {
+				padding: 10px;
+			}
+			.extremeFooter {
+				padding: 8px 20px;
+				margin: -2px;
+				font-size: 12px;
+				background-color: orange;
+				border-bottom-left-radius: 5px;
+				border-bottom-right-radius: 5px;
+				color: brown;
+				text-align: center;
+			}
+
+
+    </style>
+			
+    
+</head>
+<body>
+	  
+	  
+	  <!-- html2canvas library -->
+	  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+	<div class="topheader">
+		<span>Send Message</span>
+	</div>
+     
+    <div id="List"></div>
+	
+	<script>
+     const mobileNums =[
+        "9948214520",
+"9505077893",
+"7809905424",
+"3422210970",
+"9422293023",
+"9640328127",
+"8000949480",
+"9000600826",
+"7981825482",
+"9030006899",
+"7780651598",
+"9490318387",
+"9490313387",
+"9640411849",
+"8985295660",
+"9030013978",
+"9177999618",
+"9502145373",
+"9652547680",
+"8985602038",
+"9849949437",
+"9505462937",
+"9959895025",
+"8897543007",
+"7702155007",
+"9443031669",
+"9959987565",
+"7977882365",
+"9845548500",
+"9380046211",
+"9742947003",
+"8989021872",
+"8019441342",
+"7630927946",
+"9000316203",
+"9989748865",
+"9347392076",
+"6304571642",
+"9834554945",
+"7702827260",
+"8347057302",
+"9405234494",
+"8790057816",
+"9959074098",
+"8989314395",
+"9949810123",
+"6263291298",
+"7000837790",
+"3890426867",
+"9970906688",
+"7995728481",
+"9391039569",
+"9000630623",
+"9032946947",
+"9849166692",
+"9441536999",
+"9441640898",
+"7780335167",
+"9490684829",
+     ]
+     const msg = `संपूर्ण माहिती वाचुन मगच ग्रुप जॉईन करून नोंदणी करा. आधीच नोंदणी केली असेल तर परत करू नये 
+(१) स्वतःचा श्रीगजानन विजय ग्रंथ सोबत आणायचा आहे.
+(२) बाहेर गावच्या भक्तांनी राहण्याची व्यवस्था स्वतः करायची आहे. 
+(३) पारायण सकाळी ८:०० ला सुरू होत असल्यामुळे भक्तांनी ७:३० वाजे पर्यंत पारायण स्थळी येऊन आपले स्थान ग्रहण करणे अपेक्षित आहे.
+हा ग्रुप जॉईन केल्यावर लगेच खालील माहिती द्यावी लागेल:
+मोबाईल नंबर 
+नांव
+स्त्री/पुरुष 
+वय
+पत्ता
+खाली/खुर्चीवर बसुन पारायण करणार ?
+
+महापारायणात भाग घेण्याची इच्छा आहे फक्त अश्याच भक्तांनी नोंदणी करावी.
+*ग्रुप लिंक: Join Group*https://chat.whatsapp.com/Jl83LnTJ26HEtyRLFfGldi
+फक्त मेसेज करून संपर्क करणे
+श्रीमती रोहिणी चेरेकर-9550692866
+श्री नागेश व्ही राव-9246560132
+सौ मीना जोशी-8978503368
+श्री श्रीधर देशपांडे-9291475393
+डॉ प्रकाश काळगापुरकर–8639752615
+श्री श्रीकांत माढेकर-9866247036
+श्री श्रीकांत बिवरे-9573848261
+श्री दत्तात्रय राजेश्वरकर-9959994606
+श्री प्रविण रामटेके-9866304502
+सौ स्वप्ना उपलेंचवार-8374964325
+सौ राधिका मुळे-9866287324
+श्री धनंजय जोशी-9063710387`
+     function generateList()   {
+        let htmlList = mobileNums.map(phoneNo => {return `<a href="#" onclick="send(${phoneNo})">${phoneNo}</a>`}).join("<br/><br/>");
+        document.getElementById("List").innerHTML = htmlList;
+     }
+
+     function send(phoneNo){
+        let encodedMessage = encodeURIComponent(msg);
+
+        if(phoneNo !== ''){
+            let whatsappLink = `https://wa.me/${phoneNo}?text=${encodedMessage}`;
+            // Open WhatsApp share link
+            window.open(whatsappLink, '_blank');
+        }
+     }
+
+     generateList();
+
+
+    </script>
+	
+</body>
+</html>
