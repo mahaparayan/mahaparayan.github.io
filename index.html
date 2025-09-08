@@ -236,7 +236,10 @@
     </div>
     <div class="content">				
             <div id="RegList"></div>
-            <div id="errorDiv" class="errorMsg" style="visibility: hidden;">
+            <div id="inputErrorDiv" class="errorMsg" style="display: none;">
+                <span>कृपया १० अंकी मोबाईल नंबर द्या</span>
+            </div>  
+            <div id="errorDiv" class="errorMsg" style="display: none;">
                 <span>ह्या मोबाईल नंबरची नोंदणी अजून झाली नाही, नोंदणी साठी गुगल फॉर्म भरण्यासाठी खाली दिलेला बटनावर क्लिक करा.</span>
                 <br/><br/>
                 <button id="openForm" onclick="openForm()" class="sendInfoBtn">माहिती पाठवा</button>
@@ -257,6 +260,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@indic-transliteration/sanscript@1.3.3/sanscript.js"></script>
     <script>
         
+        var searchKey;
         var dataset;
         var filteredset;
         var timeout;
@@ -277,6 +281,13 @@
                 'NEEDCHAIR': 7,
                 'NEEDPOTHI': 8
             };
+
+            const States = Object.freeze({
+                CardsVisible: "CardsVisible",
+                NoRecordsFound: "NoRecordsFound",
+                InvalidInput: "InvalidInput"
+            });
+
 
         function openForm() {
 			let formLink = `https://docs.google.com/forms/d/e/1FAIpQLScWMONxWrfmyQxd1bB8Cr-E3SL8X_R3AjhApvLK7tzTV99psg/viewform?usp=header`;
@@ -310,8 +321,8 @@
             searchBox.addEventListener('input', delayedSearch, false);
             fetchAndUpdate();
             showSearch(false, "Loading...");
-            showNoRecordMsg(false);
         }
+
 
         function showSearch(isShown, msg=""){
             const searchBox = document.getElementById('searchBox');
@@ -321,11 +332,27 @@
             statusmsg.style.visibility = isShown?"hidden":"visible";
         }
 
-        function showNoRecordMsg(isShown){
-            const errorDiv = document.getElementById("errorDiv");
-            errorDiv.style.visibility = isShown?"visible":"hidden";
-            const listElement = document.getElementById('RegList');
-            listElement.style.display = isShown?"none":"block";
+        function showControl(state){
+            const noRecordDiv = document.getElementById("errorDiv");
+            const cards = document.getElementById('RegList');
+            const inputErrorDiv = document.getElementById('inputErrorDiv');
+            noRecordDiv.style.display = "none";
+            cards.style.display = "none";
+            inputErrorDiv.style.display = "none";
+            switch(state){
+                case States.CardsVisible:
+                    cards.style.display = "block";
+                    break;
+                case States.NoRecordsFound:
+                    noRecordDiv.style.display = "block";
+                    break;
+                case "InvalidInput":
+                    inputErrorDiv.style.display = "block";
+                    break;
+                default:
+                    break;
+
+            }
         }
         
 
@@ -479,15 +506,20 @@
 
 
         function updateList(){
-            if(filteredset && filteredset.length > 0){
-                showNoRecordMsg(false);
-                var dataset = filteredset;
-                const listElement = document.getElementById('RegList');
-                const markup = `${dataset.map(reg => createCard(reg))}`;
-                listElement.innerHTML = markup;
+            if (!searchKey || searchKey === '' || searchKey.length != 10) {
+                showControl(States.InvalidInput);
             }
             else {
-                showNoRecordMsg(true);
+                if(filteredset && filteredset.length > 0){
+                    showControl(States.CardsVisible);
+                    var dataset = filteredset;
+                    const markup = `${dataset.map(reg => createCard(reg))}`;
+                    listElement = document.getElementById('RegList');
+                    listElement.innerHTML = markup;
+                }
+                else {
+                    showControl(States.NoRecordsFound);
+                }
             }
         }
 
@@ -515,8 +547,8 @@
         cancel = false;
         busy = true;
         evt = evtdata;
-        var searchKey = evt?.target?.value;
-        if (!searchKey || searchKey === '') {
+        searchKey = evt?.target?.value;
+        if (!searchKey || searchKey === '' || searchKey.length < 10) {
             filteredset = [];
             updateList();
             cancel = true;
@@ -602,6 +634,7 @@
             .replace(/\s+/g, " ")              // collapse spaces
             .replace(/[^a-zA-Z ]/g, "")  // keep only letters & spaces
             .replace(/\s+/g, " ")        // collapse multiple spaces
+            .replace(/\b\w/g, char => char.toUpperCase()) // capitalize first letter
             .trim();
     }
 
@@ -627,6 +660,30 @@
         }
         }
         return unique;
+    }
+
+    function jsonToCsv(jsonArray) {
+      const items = Array.isArray(jsonArray) ? jsonArray : [jsonArray];
+      const csv = [
+        ...items.map(row => row.join(","))
+      ].join("\n");
+
+      return csv;
+    }
+
+    function exportCSV() {
+      const unq = deduplicateByName(dataset);
+      const csv = jsonToCsv(unq);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "UniqueRegistrations.csv");
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
         
     </script>
