@@ -418,9 +418,10 @@
                     dataset = data
                     filteredset = dataset;
                     normalizeNames();
-                    console.log('Total:', filteredset.length); // Log the values in the sheet
+                    temp = deduplicateByName(filteredset);
+                    console.log('Total:', temp.length); // Log the values in the sheet
                     const totalSpan = document.getElementById('total');
-                    totalSpan.innerHTML = filteredset.length;
+                    totalSpan.innerHTML = temp.length;
                     showSearch(true);
                 })
                 .catch(error => {
