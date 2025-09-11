@@ -228,7 +228,7 @@
 	<div class="topheader">
         <span>भाग्यनगर (हैदराबाद) महापारायण </span><br/><span></span> ९ नोव्हेंबर, २०२५ </span><br/><span></span>पारायण नोंदणी तपासा</span>
 	</div>
-    <span id="total" style="font-size: 8px;color: gray;text-align: right;margin: 0px;padding: 0px;"></span>
+    <span id="total" style="font-size: 8px;color: gray;text-align: right;margin: 0px;padding: 0px;">-</span>
      <div class="sb-container">
         <span id="statusmsg"></span>
             <input id="searchBox" type="search" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Search by phone number ..." style="width: 100%; height: 32px;font-size: 20px; margin: 5px;">
@@ -270,6 +270,11 @@
         var cancel = false;
         var busy = false;
         var summary;
+
+        let resolveDatasetReady;
+        const datasetReady = new Promise((resolve) => {
+            resolveDatasetReady = resolve;
+        });
         
         const propmap = {
                 'TIMESTAMP': 0,
@@ -321,7 +326,7 @@
             //listElement = document.getElementById('DataList');
             searchBox.addEventListener('input', delayedSearch, false);
             fetchAndUpdate();
-            showSearch(false, "Loading...");
+            //showSearch(false, "Loading...");
         }
 
 
@@ -422,7 +427,8 @@
                     console.log('Total:', temp.length); // Log the values in the sheet
                     const totalSpan = document.getElementById('total');
                     totalSpan.innerHTML = temp.length;
-                    showSearch(true);
+                    resolveDatasetReady(); // resolve the promise
+                    //showSearch(true);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -527,7 +533,7 @@
         }
 
        
-        var delayedSearch = (evt) => {
+        var delayedSearch = async (evt) => {
         cancel = true;
         clearTimeout(timeout);
         timeout = 0;
@@ -542,11 +548,10 @@
                 timeout = setTimeout(startSearch, 250);
             }
         }
-
             startSearch();
         }
 
-        var onSearch = async(evt) => {
+        var onSearch = async (evt) => {
         cancel = false;
         busy = true;
         evt = evtdata;
@@ -558,6 +563,8 @@
             busy = false;
             return;
         }
+
+        await datasetReady;
         /*if (!searchKey || searchKey === '') {
             filteredset = dataset;
             updateList();
