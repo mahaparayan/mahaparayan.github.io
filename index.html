@@ -388,25 +388,6 @@
 	    function getRecordString(item){
             return `${getData(item, propmap.REGID)},${getData(item, propmap.NAME)},${getPothiString(getData(item, propmap.NEEDPOTHI))},${getData(item, propmap.MOBILENO)},${getBaithakString(getData(item, propmap.NEEDCHAIR))},${getSectionName(getData(item, propmap.SECTION))},${getData(item, propmap.STATUS)}\n`;
         }
-
-        
-        function copy(event) {
-            event.preventDefault(); // Prevent default navigation
-            
-            var records = `RegNo,Name, Pothi,MobNo,SittingType,Section,Status\n`;
-            filteredset.forEach(element => {
-
-                records += getRecordString(element);
-            });
-
-            console.log(records);
-
-            navigator.clipboard.writeText(records).then(() => {
-                alert("Copied to clipboard!");
-            }).catch(err => {
-                alert("Failed to copy text: ", err);
-            });
-        }
         	    
         function fetchAndUpdate(){
             url = "https://script.google.com/macros/s/AKfycbxAnrmDOddW_s6YLI4IA78ZKC2AaQTfN6UU614cRO9jYTXSJDeTlqurUNFzYf-0Obzizg/exec";
@@ -438,7 +419,7 @@
 
         function normalizeNames(){
             filteredset.forEach(element => {
-                element[1] = normalizeName(element[1]);
+                element[12] = normalizeName(element[1]);
             });
 
         }
@@ -665,7 +646,7 @@
     function deduplicateByName(objects) {
         const unique = [];
         for (let obj of objects) {
-        if (!unique.some(u => areSimilar(u[1], obj[1]))) {
+        if (!unique.some(u => areSimilar(u[12], obj[12]))) {
             unique.push(obj);
         }
         }
