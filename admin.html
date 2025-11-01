@@ -435,20 +435,16 @@
             event.preventDefault(); // Prevent default navigation
             generateSummary();
             const summaryStr = `    
-    पुरुष: ${summary.Gender.M}, महिला: ${summary.Gender.F} 
+    पुरुष: ${summary.Gender.M}, महिला: ${summary.Gender.F}, एकूण: ${dataset.length} 
 
     बैठकी -
-        कुर्सी वर: ${summary.NeedChair.Yes} 
-        खाली बसून: ${summary.NeedChair.No}  
+        कुर्सी वर: ${summary.NeedChair.Yes}, खाली बसून: ${summary.NeedChair.No}  
 
     पोथी - 
-        पाहिजे: ${summary.NeedPothi.Yes}, 
-        स्वताची आहे: ${summary.NeedPothi.No}
+        पाहिजे: ${summary.NeedPothi.Yes}, स्वताची आहे: ${summary.NeedPothi.No}
 
     राहणारे - 
-        हैद्राबाद: ${summary.Region.Hyderabad}, 
-        इतर : ${summary.Region.Other}
-            `;
+        हैद्राबाद: ${summary.Region.Hyderabad}, इतर : ${summary.Region.Other}`;
             alert(summaryStr);
         }
 
@@ -499,7 +495,7 @@
                     dataset = removeDupes(dataset);
                     massageData();
                     filteredset = dataset;
-                    document.getElementById('regCount').innerHTML = data.values.length;
+                    document.getElementById('regCount').innerHTML = filteredset.length;
 
                     generateSummary();
                     createAreaFilterDropdown();
