@@ -646,7 +646,15 @@
     function deduplicateByName(objects) {
         const unique = [];
         for (let obj of objects) {
-        if (!unique.some(u => areSimilar(u[12], obj[12]))) {
+        if (!unique.some(u => {
+            if(u[2] !== obj[2]){
+                return false;
+            }
+            else {
+                return areSimilar(u[12], obj[12])
+            }
+        })) 
+        {
             unique.push(obj);
         }
         }
