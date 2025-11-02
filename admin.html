@@ -477,6 +477,7 @@
                     console.log('Sheet Data:', data.values); // Log the values in the sheet
                     dataset = data.values;
                     dataset = removeDupes(dataset);
+                    console.log('Filtered:', dataset); // Log the values in the sheet
                     massageData();
                     filteredset = dataset;
                     document.getElementById('regCount').innerHTML = filteredset.length;
@@ -645,7 +646,7 @@
         cancel = false;
         busy = true;
         evt = evtdata;
-        var searchKey = evt?.target?.value;
+        var searchKey = evt?.target?.value.toLowerCase();
         /*if (!searchKey || searchKey === '') {
             filteredset = dataset;
             updateList();
@@ -666,8 +667,12 @@
             filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.MOBILENO, dataset));
         }
         if(!cancel && filteredset.length == 0){
+            filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.NORMALIZEDNAME, dataset));
+        }
+        if(!cancel && filteredset.length == 0){
             filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.NAME, dataset));
         }
+
         if(!cancel){
             updateList();
         }
@@ -690,7 +695,7 @@
 
     var filterList = (searchKey, prop, list) => {
         //var searchKeyLowerCase = searchKey.toLowerCase();
-        //var filteredList =  list.filter(item => item[prop].includes(searchKey));
+        var filteredList =  list.filter(item => item[prop].toLowerCase().includes(searchKey));
         const chairOptions = Array.from(document.querySelectorAll('input[name="chair"]:checked')).map(cb => cb.value);
         const pothiOptions = Array.from(document.querySelectorAll('input[name="pothi"]:checked')).map(cb => cb.value);
         const regionOptions = Array.from(document.querySelectorAll('input[name="region"]:checked')).map(cb => cb.value);
@@ -699,7 +704,7 @@
 
         var filteredList = list.filter(item => {
                     var include = true;
-                    include = include && (searchKey && searchKey.length>1)? item[prop].includes(searchKey):true;
+                    include = include && (searchKey && searchKey.length>1)? item[prop].toLowerCase().includes(searchKey):true;
                     include = include && chairOptions.includes(getData(item, propmap.NEEDCHAIR)) ;
                     include = include && pothiOptions.includes(getData(item, propmap.NEEDPOTHI)) ;
                     include = include && regionOptions.includes(getData(item, propmap.REGION)) ;
