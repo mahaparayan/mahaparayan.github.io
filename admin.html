@@ -647,6 +647,11 @@
         busy = true;
         evt = evtdata;
         var searchKey = evt?.target?.value.toLowerCase();
+        if(searchKey.startsWith("+91")){
+            searchKey = searchKey.replace("+91", "").replace(" ", "").trim();
+            // Remove all spaces
+            searchKey = searchKey.replace(/\s+/g, "");
+        }
         /*if (!searchKey || searchKey === '') {
             filteredset = dataset;
             updateList();
