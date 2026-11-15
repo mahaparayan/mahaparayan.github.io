@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parayan Registrations Management </title>
+</head>
+<style>
+    .item {
+        /*padding: 10px 0;*/
+        font-size: large;
+    }
+    body {
+        text-align: center;
+    }
+    html, body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .sb-container {
+        flex-shrink: 0; /* Prevent the image container from shrinking */
+        display: flex;
+        justify-content: center; /* Horizontally center the image */
+        align-items: center; /* Vertically center the image */
+        padding: 5px 10px; /* Padding around the image */
+        background-color: #ffffff; /* Example background for the image container */
+    }
+
+    .content {
+        flex-grow: 1;
+        overflow-y: auto; /* Enable vertical scrolling */
+        padding: 5px; /* Example padding */
+        box-sizing: border-box; /* Include padding in height calculation */
+    }
+
+    .content div {
+        margin-bottom: 20px; /* Space between content div elements */
+        padding-left: 5px; /* Example padding for inner divs */
+        background-color: #ffffff; /* Example background for inner divs */
+    }
+    .warning {
+        color: red;
+        font-size: 18px;
+        float: left;
+        padding: 0px 10px;
+    }
+    .success {
+        color: green;
+        font-size: 18px;
+        float: left;
+        padding: 0px 10px;
+    }
+    .filter-box {
+        float: left;
+        display: inline;
+        border-radius: 6px;
+        padding: 4px;
+        margin: 0px 2px;
+        border: 1px solid gray;
+    }
+
+    .dropdown {
+            position: relative;
+            margin-top: 8px;
+            float: left;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
+            z-index: 1;
+            margin: 25px;
+            max-height: 50vh; /* Make the dropdown max-height 50% of the viewport */
+            overflow-y: auto; /* Enable vertical scroll if content exceeds max-height */
+        }
+
+        .dropdown-content label {
+            display: flex;
+            padding: 8px;
+            cursor: pointer;
+            
+        }
+
+        .dropdown-content label:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown.show .dropdown-content {
+            display: block;
+        }
+
+        #selectedItems {
+            margin-top: 10px;
+        }
+
+        .disabled-red {
+            color: red;          /* Optional: Change color to indicate disabled state */
+            text-decoration: none;
+            text-decoration: line-through;
+        }
+        .disabled-grey {
+            color: gray;          /* Optional: Change color to indicate disabled state */
+            text-decoration: none;
+            text-decoration: line-through;
+        }
+</style>
+
+<body>
+    <div class="container">
+        <span style="font-size: 26px; padding: 10px">पारायण नोंदणी व्यवस्थापन </span>
+        <div style="font-size: 20px; padding: 10px">
+            <span>नोंदणी संख्या: </span><span id="regCount">...</span>
+        </div>
+        
+
+        <div class="sb-container">
+            <input id="searchBox" type="search" placeholder="Search by name or phone number ..." style="width: 100%; height: 32px;font-size: 20px; margin: 5px;">
+            <button id="searchBtn" style="position: absolute;width: 16%;height: 38px;right: 0px; display: none;">                    
+            </button>
+        </div>
+        <div class="content">				
+            <!--<div id="BhajanList" style="overflow: scroll;height: calc(100% - 170px);position: fixed;width: calc(100% - 20px);margin: 20px 10px 0 10px;"></div>-->
+            <div id="RegList"></div>
+        </div>
+        
+    </div>
+
+    <script src="scripts/string-similarity.min.js"></script>
+    <script src="scripts/sanscript.js"></script>
+
+    <script>
+        
+        var dataset;
+        var filteredset;
+        var timeout;
+        var timeout;
+        var evtdata;
+        var cancel = false;
+        var busy = false;
+        var summary;
+
+        const sittingSections = [ 
+            //sitting
+            { color: 'd37539', name: 'भक्त - अनुसयाबाई', capacity: 108, currentAllocation: 0, type: 'nochair' }, //orange-8
+            { color: '428ba0', name: 'भक्त - बनाबाई', capacity: 108, currentAllocation: 0, type: 'nochair' }, //firozee-10
+            { color: '5853ba', name: 'भक्त - बायजाबाई', capacity: 108, currentAllocation: 0, type: 'nochair' }, //violet-20
+            
+            //chair
+            { color: '2e92ef', name: 'भक्त - भुलाबाई', capacity: 108, currentAllocation: 0, type: 'chair' }, //light blue-7
+            { color: 'c8bd34', name: 'भक्त - चंद्रभागाबाई', capacity: 108, currentAllocation: 0, type: 'chair' }, //golden-19
+            { color: '962328', name: 'भक्त - गुजाबाई', capacity: 108, currentAllocation: 0, type: 'chair' }, //maroon-9
+            { color: 'a05d19', name: 'भक्त - नंदू बाई', capacity: 108, currentAllocation: 0, type: 'chair' }, //brown-6
+            { color: 'c5a684', name: 'भक्त - बाळकृष्ण भाऊ', capacity: 108, currentAllocation: 0, type: 'chair' }, //maroon-11
+            { color: 'f1f1f1', name: 'भक्त - कोल्हटकर', capacity: 108, currentAllocation: 0, type: 'chair' }, //white-22
+            { color: 'e467f0', name: 'भक्त - साळू बाई', capacity: 108, currentAllocation: 0, type: 'chair' }, //white-22
+            { color: 'f6a905', name: 'संत गजानन महाराज', capacity: '21000', currentAllocation: 0, type: 'chair' }, //copper-23
+  
+        ];
+
+        const propmap = {
+                'MOBILENO': 0,
+                'NAME': 1,
+                'NEEDCHAIR': 2,
+                'NEEDPOTHI': 3,
+                'REFMOBILENO': 4,
+                'ATTENDING': 5,
+                'REGID': 8,
+                'SECTION': 9,
+                'SEAT': 10
+            };
+
+        
+
+        function onLoad() {
+            searchBox = document.getElementById('searchBox');
+            //listElement = document.getElementById('DataList');
+            searchBox.addEventListener('input', delayedSearch, false);
+            
+            fetchAndUpdate();
+        }
+
+        window.addEventListener('load', onLoad, false);
+
+        function getData(obj, prop){
+            if(typeof obj === 'number'){
+                return dataset[obj][prop];
+            }
+            else {
+                return obj[prop] ?? "";
+            }
+        }
+        
+        function setData(index, prop, val){
+            dataset[index][prop] = val;
+        }
+
+        function getPothiString(np) {
+            return (np && np.toLowerCase() === 'yes')?'पाहिजे':'स्वतःची आहे'; 
+		}
+
+        function getBaithakString(nc) {
+            return (nc && nc.toLowerCase() === 'yes')?'खुर्चीवर बसुन':'खाली बसून';     
+        }
+
+	function getRecordString(item){
+            return `${getData(item, propmap.REGID)},${getData(item, propmap.NAME)},${getPothiString(getData(item, propmap.NEEDPOTHI))},${getPhoneNum(item)},${getBaithakString(getData(item, propmap.NEEDCHAIR))},${getSectionName(getData(item, propmap.SECTION))},${getData(item, propmap.STATUS)}\n`;
+        }
+
+        function copy_old(event) {
+            event.preventDefault(); // Prevent default navigation
+            //alert(filteredset.length);
+            var records = "";
+            filteredset.forEach(element => {
+
+                records += getRecordString(element);
+            });
+
+            console.log(records);
+
+            navigator.clipboard.writeText(records).then(() => {
+                alert("Copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy text: ", err);
+            });
+        }
+
+        function copy(event) {
+            event.preventDefault(); // Prevent default navigation
+            
+            var records = `RegNo,Name, Pothi,MobNo,SittingType,Section,Status\n`;
+            filteredset.forEach(element => {
+
+                records += getRecordString(element);
+            });
+
+            console.log(records);
+
+            navigator.clipboard.writeText(records).then(() => {
+                alert("Copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy text: ", err);
+            });
+        }
+        	    
+        function showSummary(event) {
+            event.preventDefault(); // Prevent default navigation
+            generateSummary();
+            const summaryStr = `    
+    पुरुष: ${summary.Gender.M}, महिला: ${summary.Gender.F}, एकूण: ${dataset.length} 
+
+    बैठकी -
+        कुर्सी वर: ${summary.NeedChair.Yes}, खाली बसून: ${summary.NeedChair.No}  
+
+    पोथी - 
+        पाहिजे: ${summary.NeedPothi.Yes}, स्वताची आहे: ${summary.NeedPothi.No}
+
+    राहणारे - 
+        हैद्राबाद: ${summary.Region.Hyderabad}, इतर : ${summary.Region.Other}`;
+            alert(summaryStr);
+        }
+
+        function generateSummary() {
+            const sm = dataset.reduce((acc, obj) => {
+                // Count occurrences of property1
+                const needChair = getData(obj, propmap.NEEDCHAIR);
+                acc.NeedChair[needChair] = (acc.NeedChair[needChair] || 0) + 1;
+
+                // Count occurrences of property2
+                const needPothi = getData(obj, propmap.NEEDPOTHI);
+                acc.NeedPothi[needPothi] = (acc.NeedPothi[needPothi] || 0) + 1;
+
+                const gender = getData(obj, propmap.GENDER);
+                acc.Gender[gender] = (acc.Gender[gender] || 0) + 1;
+
+                const region = getData(obj, propmap.REGION);
+                acc.Region[region] = (acc.Region[region] || 0) + 1;
+
+                const pin = getData(obj, propmap.PINCODE) || "";
+                acc.Pin[pin.trim()] = (acc.Pin[pin.trim()] || 0) + 1;
+
+                return acc;
+                }, { NeedChair: {}, NeedPothi: {}, Gender: {}, Region: {}, Pin: {} }); 
+
+                summary = sm;
+                
+            }
+
+        function fetchAndUpdate(){
+            const sheetId = '1laL_9pcgLyh2DQGgBfHEHUsUqF-ywUBPjXvSasN7xlw'; // Replace with your actual sheet ID
+            const sheetName = '2026'; // Replace with the name of your sheet
+            const apiKey = 'AIzaSyBTkT9f1ceMamAPhKhpMkUItgVIsH4RJuU'; // Optional, can be omitted if not using an API key
+
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+            //const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
+            console.log(url);
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Sheet Data:', data.values); // Log the values in the sheet
+                    dataset = data.values;
+                    console.log('Filtered:', dataset); // Log the values in the sheet
+                    filteredset = dataset;
+                    document.getElementById('regCount').innerHTML = filteredset.length;
+
+                    updateList();
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        
+
+        function getStatusClass(item){
+            var status = getData(item, propmap.ATTENDING);
+            var className = "";
+            if(status){
+                if(status === "FALSE") className = "disabled-grey";
+            }
+            return className;
+        }
+
+        function getCardVisibility(item){
+            var status = getData(item, propmap.STATUS);
+            if(getData(item, propmap.INCOMPLETE) || status === "Duplicate" || status === "Not attending")
+            {
+                return 'none';
+            }
+            else {
+                return 'inline';    
+            }
+        }
+
+        function updateList(){
+            if(filteredset){
+                var dataset = filteredset;
+                const listElement = document.getElementById('RegList');
+                //const markup = `${filteredBhajans.map(regData => `<div class="item"><a href="./bhajan.html?b=${bhajan.dir}-${bhajan.id}"><span style="float: left;">${bhajan.hin}</span><span style="float: right;">${bhajan.dir} - ${bhajan.id.split('.')[0] }</span></a></div>`).join('')}`;
+                //${reg[9]?'<span class="warning">&#9888</span>':'<span class="success">&#10003</span>'} 
+                const markup = `${dataset.map((reg, index) => {
+                    
+                    return index==0? null: `<div class="item" > 
+
+                    <span style="width: 40px; float: left; font-size: 12px; color: green; text-align: left;">${index}</span>
+                    <span style="float: left; font-size: 12px;">${getData(reg, propmap.SEAT)}</span>
+                    
+                    <span style="" class="${getStatusClass(reg)}">
+                        
+                        <a href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getSectionColor(getData(reg, propmap.SECTION))}&phno=91${getPhoneNum(reg)}'>${getData(reg, propmap.NAME)}<span class="chair" style="display: ${getData(reg, propmap.NEEDCHAIR) === "Yes"?'inline':'none'};">&#129681;</span></a>
+                        
+                        </span>
+                        
+                    <span style="float: right;"><a href='https://wa.me/91${getPhoneNum(reg)}'>${getPhoneNum(reg)}</a></span>
+                    
+                    
+                    
+                    </div>`;}
+                ).join('')}`;
+                listElement.innerHTML = markup;
+            }
+        }
+
+        function getPhoneNum(reg) {
+            return getData(reg, propmap.MOBILENO) === "9999999999" ? getData(reg, propmap.REFMOBILENO) : getData(reg, propmap.MOBILENO);
+        }
+
+        function getSectionName(index) {
+            
+            if(index != null && index !== ""){
+                return sittingSections[index].name;
+            }
+            else {
+                return "";
+            }
+        }
+
+        function getSectionColor(index) {
+            return 'blue';
+
+
+            if(index != null && index !== ""){
+                return sittingSections[index].color;
+            }
+            else {
+                return "";
+            }
+        }
+
+
+
+        /*
+        style="display: inline; text-decoration: none;"
+        */
+
+        var delayedSearch = (evt) => {
+        cancel = true;
+        clearTimeout(timeout);
+        timeout = 0;
+        evtdata = evt;
+        //timeouts.push(setTimeout(onSearch, 1));
+        var startSearch = () => {
+            if(!busy){
+                clearTimeout(timeout);
+                onSearch();
+            }
+            else{ 
+                timeout = setTimeout(startSearch, 250);
+            }
+        }
+
+            startSearch();
+        }
+
+        var onSearch = async(evt) => {
+        cancel = false;
+        busy = true;
+        evt = evtdata;
+        var searchKey = evt?.target?.value.toLowerCase();
+        if(searchKey.startsWith("+91")){
+            searchKey = searchKey.replace("+91", "").replace(" ", "").trim();
+            // Remove all spaces
+            searchKey = searchKey.replace(/\s+/g, "");
+        }
+        /*if (!searchKey || searchKey === '') {
+            filteredset = dataset;
+            updateList();
+        }
+        else {
+            filteredset = [];
+
+            if(!cancel && filteredset.length == 0){
+                filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.MOBILENO, dataset));
+            }
+            if(!cancel){
+                updateList();
+            }
+        }*/
+        filteredset = [];
+
+        if(!cancel && filteredset.length == 0){
+            filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.REFMOBILENO, dataset));
+        }
+        if(!cancel && filteredset.length == 0){
+            filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.NORMALIZEDNAME, dataset));
+        }
+        if(!cancel && filteredset.length == 0){
+            filteredset = await  getFilterPromise( () => filterList(searchKey, propmap.NAME, dataset));
+        }
+
+        if(!cancel){
+            updateList();
+        }
+
+        busy = false;
+    }
+
+    var getFilterPromise = (filterFunc) => {
+        return new Promise(resolve => {
+            setTimeout(async() => {
+                if (cancel) {
+                    resolve([]);
+                } else {
+                    resolve(filterFunc());
+                }
+            }, 1);
+        });
+    }
+
+
+    var filterList = (searchKey, prop, list) => {
+        //var searchKeyLowerCase = searchKey.toLowerCase();
+        var filteredList =  list.filter(item => item[prop].toLowerCase().includes(searchKey));
+        const chairOptions = Array.from(document.querySelectorAll('input[name="chair"]:checked')).map(cb => cb.value);
+        const pothiOptions = Array.from(document.querySelectorAll('input[name="pothi"]:checked')).map(cb => cb.value);
+        const regionOptions = Array.from(document.querySelectorAll('input[name="region"]:checked')).map(cb => cb.value);
+        const areaOptions = Array.from(document.querySelectorAll('#dropdownContent input[type="checkbox"]:checked:not(#option-all)')).map(cb => cb.value);
+        
+
+        var filteredList = list.filter(item => {
+                    var include = true;
+                    include = include && (searchKey && searchKey.length>1)? item[prop].toLowerCase().includes(searchKey):true;
+                    include = include && chairOptions.includes(getData(item, propmap.NEEDCHAIR)) ;
+                    include = include && pothiOptions.includes(getData(item, propmap.NEEDPOTHI)) ;
+                    include = include && regionOptions.includes(getData(item, propmap.REGION)) ;
+                    include = include && areaOptions.includes(getData(item, propmap.PINCODE).trim()) ;
+                    //&& selectedCategories.includes(item.category)
+                    return include;
+                }
+            );
+        document.getElementById('copymsg').innerHTML = `Copy ${filteredList.length} results`;
+        return filteredList;
+    }
+        
+    </script>
+</body>
+</html>
