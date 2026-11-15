@@ -7,8 +7,9 @@
 </head>
 <style>
     .item {
-        /*padding: 10px 0;*/
+        padding: 10px 0;
         font-size: large;
+        border-bottom: 1px solid grey;
     }
     body {
         text-align: center;
@@ -43,7 +44,6 @@
     }
 
     .content div {
-        margin-bottom: 20px; /* Space between content div elements */
         padding-left: 5px; /* Example padding for inner divs */
         background-color: #ffffff; /* Example background for inner divs */
     }
@@ -178,7 +178,7 @@
                 'ATTENDING': 5,
                 'REGID': 8,
                 'SECTION': 9,
-                'SEAT': 10
+                'SEAT': 12
             };
 
         
@@ -358,18 +358,14 @@
                     
                     return index==0? null: `<div class="item" > 
 
-                    <span style="width: 40px; float: left; font-size: 12px; color: green; text-align: left;">${index}</span>
-                    <span style="float: left; font-size: 12px;">${getData(reg, propmap.SEAT)}</span>
+                    <span style="width: 40px; float: left; font-size: 14px; color: green; text-align: left;">${index}</span>
+                    <span style="float: left; font-size: 14px;">${getData(reg, propmap.SEAT)}</span>
                     
-                    <span style="" class="${getStatusClass(reg)}">
+                    <span style="text-align: right; font-size: 16px;" class="${getStatusClass(reg)}">
                         
-                        <a href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getSectionColor(getData(reg, propmap.SECTION))}&phno=91${getPhoneNum(reg)}'>${getData(reg, propmap.NAME)}<span class="chair" style="display: ${getData(reg, propmap.NEEDCHAIR) === "Yes"?'inline':'none'};">&#129681;</span></a>
+                        <a  href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getSectionColor(getData(reg, propmap.SECTION))}&phno=91${getPhoneNum(reg)}'>${getData(reg, propmap.NAME)}<span class="chair" style="display: ${getData(reg, propmap.NEEDCHAIR) === "Yes"?'inline':'none'};">&#129681;</span></a>
                         
                         </span>
-                        
-                    <span style="float: right;"><a href='https://wa.me/91${getPhoneNum(reg)}'>${getPhoneNum(reg)}</a></span>
-                    
-                    
                     
                     </div>`;}
                 ).join('')}`;
