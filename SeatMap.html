@@ -224,7 +224,7 @@
   <div class="legend">
     <div class="legend-item"><div class="legend-box" style="background:#ffffff;"></div> Unoccupied</div>
     <div class="legend-item"><div class="legend-box" style="background:#334155;"></div> Attending / Occupied</div>
-    <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> Not Attending (False)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> Not Attending</div>
   </div>
 
   <div class="stage">--- Stage ---</div>
@@ -325,7 +325,8 @@
 
           allStudents = parsed;
           const occupiedTotal = parsed.filter(p => p.seatIndex !== null).length;
-          document.getElementById("statusText").textContent = `Loaded ${parsed.length} records (${occupiedTotal} assigned seats) • Last updated: ${new Date().toLocaleTimeString()}`;
+          const attendingTotal = parsed.filter(a=>a.attending.toString() === "TRUE").length;
+          document.getElementById("statusText").textContent = `Loaded ${parsed.length} seats (${attendingTotal} attending) • Last updated: ${new Date().toLocaleTimeString()}`;
           renderTheatre(allStudents);
           handleSearch();
         })
