@@ -54,12 +54,12 @@
             }
 			
             .rval {
-                font-size: 18px;
+                font-size: 20px;
                 color: brown;
                 padding-bottom: 16px;
                 padding-left: 30px;
-				text-decoration: underline;
-				text-decoration-color: #CECECE;
+				/*text-decoration: underline;*/
+				text-decoration-color: brown;
 				text-decoration-thickness: 2px;
 				font-weight: bold;
             }
@@ -125,6 +125,7 @@
         // Create the entire HTML structure as a formatted string
         const htmlContent = `
 		<table >
+			<tbody>
 			<tr  >
 				<th colspan="3">
 					<div class="header">
@@ -155,15 +156,22 @@
 			</tr>
             <tr><td class="rval">${needchair}</td></tr>
 			<tr>
-				<td class="rhdr">Section / बैठक कक्ष :</td><td></td>
+				<td class="rhdr">Section / बैठक कक्ष :</td>
 			</tr>
             <tr>
-				<td class="rval"><span style="float:left; width: 20px; height: 20px; background-color: #${sectionColor}; border-radius: 10px; border: 1px solid black;" ></span> &nbsp ${seatNum} </td>
+				<td class="rval">${seatNum} </td>
 			</tr>
+			
 			<tr>
 				<td><div style="width: 260px; heigh:1px; background-color: lightgrey; font-size: 1px;">&nbsp</div></td>
 			</tr>
-            <tr><td class="footer">सूचना: पूजा व आरती सामुग्री/साहित्य आणण्यास सक्त मनाई आहे</td></tr>
+            <tr>
+				<td class="footer">सूचना: पूजा व आरती सामुग्री/साहित्य आणण्यास सक्त मनाई आहे</td>
+			</tr>
+			<tr>
+				<td style="background-color: #${sectionColor}; height: 30px; border-radius: 5px;"></td>
+			</tr>
+			</tbody>
 		</table>
         `;
 

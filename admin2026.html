@@ -178,7 +178,8 @@
                 'ATTENDING': 5,
                 'REGID': 8,
                 'SECTION': 9,
-                'SEAT': 12
+                'SEAT': 12,
+                "SECTION_COLOR": 13
             };
 
         
@@ -363,7 +364,7 @@
                     
                     <span style="text-align: right; font-size: 16px;" class="${getStatusClass(reg)}">
                         
-                        <a  href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getSectionColor(getData(reg, propmap.SECTION))}&phno=91${getPhoneNum(reg)}'>${getData(reg, propmap.NAME)}<span class="chair" style="display: ${getData(reg, propmap.NEEDCHAIR) === "Yes"?'inline':'none'};">&#129681;</span></a>
+                        <a  href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getData(reg, propmap.SECTION_COLOR)}&phno=91${getPhoneNum(reg)}'>${getData(reg, propmap.NAME)}<span class="chair" style="display: ${getData(reg, propmap.NEEDCHAIR) === "Yes"?'inline':'none'};">&#129681;</span></a>
                         
                         </span>
                     

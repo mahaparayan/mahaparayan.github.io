@@ -149,6 +149,7 @@
             border: 5px solid orange; /* Set your desired border style */
             border-radius: 10px; /* Adjust the radius as needed */
             margin-top: 60px;
+            text-align: left;
             
         }
         table .header {
@@ -159,6 +160,7 @@
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
             color: brown;
+            text-align: center;
         }
 
         .rhdr {
@@ -241,11 +243,7 @@
                 <span>कृपया १० अंकी मोबाईल नंबर द्या</span>
             </div>  
             <div id="errorDiv" class="errorMsg" style="display: none;">
-                <span>ह्या मोबाईल नंबरची नोंदणी अजून झाली नाही, नोंदणी साठी गुगल फॉर्म भरण्यासाठी खाली दिलेला बटनावर क्लिक करा.</span>
-                <br/><br/>
-                <button id="openForm" onclick="openForm()" class="sendInfoBtn">माहिती पाठवा</button>
-                <br/><br/>
-                <span>व्हाट्सअँप ग्रुप जॉईन करायला खाली दिलेला बटनावर क्लिक करा.</span>
+                <span>ह्या मोबाईल नंबरची नोंदणी अजून झाली नाही, नोंदणी करण्या साठी व्हाट्सअँप ग्रुप जॉईन करायला खाली दिलेला बटनावर क्लिक करा.</span>
                 <br/><br/>
                 <button id="joinGroup" onclick="joinGroup()" class="joinGroupBtn">ग्रुप जॉईन करा</button>
                 <br/><br/>
@@ -285,7 +283,8 @@
                 'ATTENDING': 5,
                 'REGID': 8,
                 'SECTION': 9,
-                'SEAT': 12
+                'SEAT': 12,
+                'SECTION_COLOR': 13,
             };
 
             const States = Object.freeze({
@@ -302,7 +301,7 @@
         }
 
    		function joinGroup(){
-			let whatsappLink = 'https://chat.whatsapp.com/GavJiIiccpfA1nZtLSR1KI';
+			let whatsappLink = ' https://chat.whatsapp.com/LB4epwFTlcp1DgbxJiSNl4';
 			window.open(whatsappLink, '_blank');
 		}
 
@@ -420,7 +419,7 @@
 
         function normalizeNames(){
             filteredset.forEach(element => {
-                element[13] = normalizeName(element[1]);
+                element[14] = normalizeName(element[1]);
             });
 
         }
@@ -465,6 +464,7 @@
             const needpothi = (getData(reg, propmap.NEEDPOTHI)?.toString().toLowerCase() === 'true'?'पाहिजे':'स्वतःची आहे') || 'स्वतःची आहे/पाहिजे'; 
 		    const needchair = (getData(reg, propmap.NEEDCHAIR)?.toString().toLowerCase() === 'true'?'खुर्चीवर बसुन':'खाली बसून') || 'खुर्चीवर बसुन/खाली बसून'; 
             const seat = getData(reg, propmap.SEAT)
+            const sectionColor = getData(reg, propmap.SECTION_COLOR);
             return `<table >
                 <tr  >
                     <th colspan="3">
@@ -496,7 +496,12 @@
                 <tr>
                     <td class="rhdr">Seat Number/ बैठक क्रमांक :</td>
                 </tr>
-                <tr><td class="rval">${seat}</td></tr>
+                <tr>
+                    <td class="rval">${seat}</td>
+                </tr>
+                <tr>
+				    <td style="background-color: #${sectionColor}; height: 30px; border-radius: 5px;"></td>
+			    </tr>
             </table>
             `;
         }
@@ -658,7 +663,7 @@
                 return false;
             }
             else {
-                return areSimilar(u[13], obj[13])
+                return areSimilar(u[14], obj[14])
             }
         })) 
         {
