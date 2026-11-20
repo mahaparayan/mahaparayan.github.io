@@ -508,7 +508,7 @@
 
 
         function updateList(){
-            if (!searchKey || searchKey === '' || searchKey.length != 10) {
+            if (!searchKey || searchKey === '' || searchKey.length != 10 || searchKey === "9999999999") {
                 showControl(States.InvalidInput);
             }
             else {
