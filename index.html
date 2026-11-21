@@ -233,7 +233,7 @@
 	</div>
     <span id="total" style="font-size: 8px;color: gray;text-align: right;margin: 0px;padding: 0px;">-</span>
      <div class="sb-container">
-        <span id="statusmsg"></span>
+        <span id="statusmsg" style="font-size: 20px; width: 500px; visibility: visible; color: brown; font-weight: bold;">Loading...</span><BR/>
             <input id="searchBox" type="search" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Search by phone number ..." style="width: 100%; height: 32px;font-size: 20px; margin: 5px;">
             <button id="searchBtn" style="position: absolute;width: 16%;height: 38px;right: 0px; display: none;">                    
             </button>
@@ -273,6 +273,7 @@
         let resolveDatasetReady;
         const datasetReady = new Promise((resolve) => {
             resolveDatasetReady = resolve;
+            //alert("Dataset is ready. You can now perform searches.");
         });
         
         const propmap = {
@@ -321,12 +322,16 @@
 			window.open(whatsappLink, '_blank');
 		}
 
-        function onLoad() {
+        var searchBox;
+        async function onLoad() {
             searchBox = document.getElementById('searchBox');
             //listElement = document.getElementById('DataList');
             searchBox.addEventListener('input', delayedSearch, false);
             fetchAndUpdate();
-            //showSearch(false, "Loading...");
+            showSearch(false, "Loading... please wait...");
+            await datasetReady;
+            //searchBox.disabled = true;
+            showSearch(true, "");
         }
 
 
