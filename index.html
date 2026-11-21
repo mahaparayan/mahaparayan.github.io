@@ -411,9 +411,9 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Sheet Data:', data.values); // Log the values in the sheet
+                    //console.log('Sheet Data:', data.values); // Log the values in the sheet
                     dataset = data.values;
-                    console.log('Data:', dataset); // Log the values in the sheet
+                    //console.log('Data:', dataset); // Log the values in the sheet
                     filteredset = dataset;
                     console.log('Total:', dataset.length); // Log the values in the sheet
                     const totalSpan = document.getElementById('total');
@@ -455,9 +455,10 @@
                 });
         }
 
+        var NORMALIZE_NAME_INDEX = 100;
         function normalizeNames(){
             filteredset.forEach(element => {
-                element[14] = normalizeName(element[1]);
+                element[NORMALIZE_NAME_INDEX] = normalizeName(element[1]);
             });
 
         }
@@ -615,12 +616,12 @@
             try {
                 if(!cancel && filteredset.length == 0){
                     var filteredset1 = await  getFilterPromise( () => filterList(searchKey, propmap.MOBILENO, dataset));
-                    filteredset2 = await  getFilterPromise( () => filterList(searchKey, propmap.REFMOBILENO, dataset));
+                    var filteredset2 = await  getFilterPromise( () => filterList(searchKey, propmap.REFMOBILENO, dataset));
                     filteredset = [...filteredset1, ...filteredset2];
                 }
                 
                 if(!cancel){
-                    filteredset = deduplicateByName(filteredset);
+                    //filteredset = deduplicateByName(filteredset);
                     updateList();
                     
                 }
@@ -648,14 +649,15 @@
 
     var filterList = (searchKey, prop, list) => {
         
-        var filteredList = list.filter(item => {
+        var filteredList = list.filter((item, index) => {
                     var include = true;
                     try{
-                        include = include && (searchKey && searchKey.length>1)? item[prop].toString().startsWith(searchKey):true;
+                        include = include && (searchKey && searchKey.length>1 )? item[prop].toString().startsWith(searchKey):true;
                     } catch (err)
                     {
                         include = false;
-                        console.log(err);
+                        console.log(`Error filtering item at index ${index}:`, err);
+                        //console.log(err);
                     }
 
                     return include;
@@ -702,7 +704,7 @@
                 return false;
             }
             else {
-                return areSimilar(u[14], obj[14])
+                return areSimilar(u[NORMALIZE_NAME_INDEX], obj[NORMALIZE_NAME_INDEX])
             }
         })) 
         {
