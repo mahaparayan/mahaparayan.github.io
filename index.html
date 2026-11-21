@@ -231,9 +231,10 @@
 	<div class="topheader">
         <span>भाग्यनगर (हैदराबाद) महापारायण </span><br/><span></span> २९ नोव्हेंबर, २०२६  </span><br/><span></span>पारायण नोंदणी तपासा</span>
 	</div>
+    <span id="statusmsg" style="font-size: 20px; width: 500px; visibility: visible; color: brown; font-weight: bold;">Loading...</span><BR/>
     <span id="total" style="font-size: 8px;color: gray;text-align: right;margin: 0px;padding: 0px;">-</span>
      <div class="sb-container">
-        <span id="statusmsg" style="font-size: 20px; width: 500px; visibility: visible; color: brown; font-weight: bold;">Loading...</span><BR/>
+        
             <input id="searchBox" type="search" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Search by phone number ..." style="width: 100%; height: 32px;font-size: 20px; margin: 5px;">
             <button id="searchBtn" style="position: absolute;width: 16%;height: 38px;right: 0px; display: none;">                    
             </button>
@@ -393,8 +394,39 @@
 	    function getRecordString(item){
             return `${getData(item, propmap.REGID)},${getData(item, propmap.NAME)},${getPothiString(getData(item, propmap.NEEDPOTHI))},${getData(item, propmap.MOBILENO)},${getBaithakString(getData(item, propmap.NEEDCHAIR))},${getSectionName(getData(item, propmap.SECTION))},${getData(item, propmap.STATUS)}\n`;
         }
-        	    
+
         function fetchAndUpdate(){
+            const sheetId = '1laL_9pcgLyh2DQGgBfHEHUsUqF-ywUBPjXvSasN7xlw'; // Replace with your actual sheet ID
+            const sheetName = '2026'; // Replace with the name of your sheet
+            const apiKey = 'AIzaSyBTkT9f1ceMamAPhKhpMkUItgVIsH4RJuU'; // Optional, can be omitted if not using an API key
+
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+            //const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
+            console.log(url);
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Sheet Data:', data.values); // Log the values in the sheet
+                    dataset = data.values;
+                    console.log('Data:', dataset); // Log the values in the sheet
+                    filteredset = dataset;
+                    console.log('Total:', dataset.length); // Log the values in the sheet
+                    const totalSpan = document.getElementById('total');
+                    totalSpan.innerHTML = dataset.length;
+                    resolveDatasetReady(); // resolve the promise
+                    //updateList();
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+        	    
+        function fetchAndUpdate_Func(){
             //url = "https://script.google.com/macros/s/AKfycbxAnrmDOddW_s6YLI4IA78ZKC2AaQTfN6UU614cRO9jYTXSJDeTlqurUNFzYf-0Obzizg/exec";
             url = "https://script.google.com/macros/s/AKfycbx2GqadZ6tL302EljRWTEDJT-WXk-RI40XT3-v9cfay02zH4T8RMdRdTVwRGjg1lg__/exec";
             
