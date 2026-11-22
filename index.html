@@ -621,7 +621,7 @@
                 }
                 
                 if(!cancel){
-                    //filteredset = deduplicateByName(filteredset);
+                    filteredset = deduplicateByNumber(filteredset);
                     updateList();
                     
                 }
@@ -705,6 +705,24 @@
             }
             else {
                 return areSimilar(u[NORMALIZE_NAME_INDEX], obj[NORMALIZE_NAME_INDEX])
+            }
+        })) 
+        {
+            unique.push(obj);
+        }
+        }
+        return unique;
+    }
+
+        function deduplicateByNumber(objects) {
+        const unique = [];
+        for (let obj of objects) {
+        if (!unique.some(u => {
+            if(u[1] !== obj[1]){
+                return false;
+            }
+            else {
+                return areSimilar(u[propmap.MOBILENO], obj[propmap.MOBILENO])
             }
         })) 
         {
