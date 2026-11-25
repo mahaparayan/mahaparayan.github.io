@@ -56,7 +56,7 @@
             .rval {
                 font-size: 20px;
                 color: brown;
-                padding-bottom: 16px;
+                padding-bottom: 10px;
                 padding-left: 30px;
 				/*text-decoration: underline;*/
 				text-decoration-color: brown;
@@ -103,8 +103,12 @@
 
     <div id="embeddedContent"></div>
 	<div style="height: 5px;"></div>
-	<button id="shareBtn">Download and Share</button>
 	
+	<div>
+		<button id="shareBtnPhno" style="margin: 5px; float: left;" >Send to Primary</button>
+		<button id="shareBtnRefphno" style="margin: 5px; float: right;" >Send to Reference</button>
+	</div>
+
 	<script>
         // Function to get URL parameters
         function getParameterByName(name) {
@@ -121,6 +125,7 @@
 		const seatNum = (getParameterByName('seatNum')?.toUpperCase()) || 'बैठक कक्ष'; 
 		const sectionColor = (getParameterByName('sectionClr')?.toUpperCase()) || 'बैठक कक्ष'; 
 		const phoneNo = (getParameterByName('phno')?.toUpperCase()) || ''; 
+		const refPhoneNo = (getParameterByName('refphno')?.toUpperCase()) || ''; 
 
         // Create the entire HTML structure as a formatted string
         const htmlContent = `
@@ -178,7 +183,7 @@
         // Insert the formatted HTML into the content div
         document.getElementById('embeddedContent').innerHTML = htmlContent;
 
-		function saveTableAsImageAndShare() {
+		function saveTableAsImageAndShare(phoneNumber) {
 			// Convert table to canvas
 			html2canvas(document.getElementById('embeddedContent')).then(canvas => {
 					// Convert canvas to a data URL for the image
@@ -197,8 +202,8 @@
 					let whatsappMessage = `नोंदणी कार्ड - ${name}`;
             		let encodedMessage = encodeURIComponent(whatsappMessage);
 
-					if(phoneNo !== ''){
-						let whatsappLink = `https://wa.me/${phoneNo}?text=${encodedMessage}`;
+					if(phoneNumber !== ''){
+						let whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 						// Open WhatsApp share link
 						window.open(whatsappLink, '_blank');
 					}
@@ -206,8 +211,17 @@
 		}
 
 		// Button event listener
-		document.getElementById('shareBtn').addEventListener('click', function() {
-			saveTableAsImageAndShare();
+		const shareBtnPhno = document.getElementById('shareBtnPhno');
+		shareBtnPhno.disabled = (phoneNo === '919999999999' ? true : false);
+		shareBtnPhno.addEventListener('click', function() {
+			saveTableAsImageAndShare(phoneNo);
+		});
+		
+		// Button event listener
+		const shareBtnRefphno = document.getElementById('shareBtnRefphno');	
+		shareBtnRefphno.disabled = ((refPhoneNo === '91'? true : false) || (refPhoneNo === phoneNo ? true : false));
+		shareBtnRefphno.addEventListener('click', function() {
+			saveTableAsImageAndShare(refPhoneNo);
 		});
 
             
