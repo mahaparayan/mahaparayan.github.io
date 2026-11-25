@@ -418,9 +418,11 @@
                         <span style="text-align: right; font-size: 16px;" >
                             <a  href='./idcard2026.html?name=${getData(reg, propmap.NAME)}&regno=${getData(reg, propmap.REGID)}&needchair=${getData(reg, propmap.NEEDCHAIR)}&needpothi=${getData(reg, propmap.NEEDPOTHI)}&seatNum=${getData(reg, propmap.SEAT)}&sectionClr=${getData(reg, propmap.SECTION_COLOR)}&phno=91${getPhoneNum(reg)}'>
                                 <div class="${getStatusClass(reg)}">
-                                    ${getData(reg, propmap.NAME)} - 
                                     <span style="background-color: ${getData(reg, propmap.REFMOBILENO) === "8390744999"?'yellow':'transparent'};">
-                                        (${getPhoneNum(reg)}) 
+                                        ${getData(reg, propmap.NAME)}
+                                    </span>
+                                    <span style="display: none; background-color: ${getData(reg, propmap.REFMOBILENO) === "8390744999"?'yellow':'transparent'};">
+                                       - (${getPhoneNum(reg)}) 
                                     </span>
                                 </div>
                             </a>
