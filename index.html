@@ -340,8 +340,8 @@
             searchBox.style.visibility = isShown?"visible":"hidden";
             const statusmsg = document.getElementById('statusmsg');
             if(statusmsg){
-                statusmsg?.innerHTML = msg;
-                statusmsg?.style.visibility = isShown?"hidden":"visible";
+                statusmsg.innerHTML = msg;
+                statusmsg.style.visibility = isShown?"hidden":"visible";
             }
         }
 
@@ -418,7 +418,7 @@
                     filteredset = dataset;
                     console.log('Total:', dataset.length); // Log the values in the sheet
                     const totalSpan = document.getElementById('total');
-                    totalSpan.innerHTML = dataset.length;
+                    if(totalSpan) totalSpan.innerHTML = dataset.length;
                     resolveDatasetReady(); // resolve the promise
                     //updateList();
                 })
