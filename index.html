@@ -231,8 +231,7 @@
 	<div class="topheader">
         <span>भाग्यनगर (हैदराबाद) महापारायण </span><br/><span></span> २९ नोव्हेंबर, २०२६  </span><br/><span></span>पारायण नोंदणी तपासा</span>
 	</div>
-    <span id="statusmsg" style="font-size: 20px; visibility: visible; color: brown; font-weight: bold;">Loading...</span><BR/>
-    <span id="total" style="font-size: 8px;color: gray;text-align: right;margin: 0px;padding: 0px;">-</span>
+    
      <div class="sb-container">
         
             <input id="searchBox" type="search" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Search by phone number ..." style="width: 100%; height: 32px;font-size: 20px; margin: 5px;">
@@ -340,8 +339,10 @@
             const searchBox = document.getElementById('searchBox');
             searchBox.style.visibility = isShown?"visible":"hidden";
             const statusmsg = document.getElementById('statusmsg');
-            statusmsg.innerHTML = msg;
-            statusmsg.style.visibility = isShown?"hidden":"visible";
+            if(statusmsg){
+                statusmsg?.innerHTML = msg;
+                statusmsg?.style.visibility = isShown?"hidden":"visible";
+            }
         }
 
         function showControl(state){
@@ -500,6 +501,7 @@
 
         function createCard(reg){
             const name = getData(reg, propmap.NAME);
+            const regno = getData(reg, propmap.REGID); 
             const needpothi = (getData(reg, propmap.NEEDPOTHI)?.toString().toLowerCase() === 'true'?'पाहिजे':'स्वतःची आहे') || 'स्वतःची आहे/पाहिजे'; 
 		    const needchair = (getData(reg, propmap.NEEDCHAIR)?.toString().toLowerCase() === 'true'?'खुर्चीवर बसुन':'खाली बसून') || 'खुर्चीवर बसुन/खाली बसून'; 
             const seat = getData(reg, propmap.SEAT)
@@ -522,7 +524,11 @@
                     <td class="rhdr">Name / नावं :</td>
                 </tr>
                 <tr><td class="rval">${name}</td></tr>
-                
+                <tr>
+				    <td class="rhdr">Reg.No. / नोंदणी क्र. :</td>
+                </tr>
+                    <tr><td class="rval">${regno}</td></tr>
+                <tr>
                 <tr>
                     <td class="rhdr">Book / पोथी : </td>
                 </tr>
